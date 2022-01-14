@@ -1,6 +1,8 @@
 
 class AuthenticationService {
   String? _loginToken;
+  String? participantId;
+  String? studyId;
 
   Future<void> login(String tokenOrURL){
     String token;
@@ -11,7 +13,9 @@ class AuthenticationService {
       token = tokenOrURL;
     }
     _loginToken = token;
-    return Future(()=>{});
+    return Future(()=>{
+
+    });
   }
 
   bool isLoggedIn(){
