@@ -1,8 +1,10 @@
 
+import 'package:niresto_flutter/services/graphql_service.dart';
+import 'package:get_it/get_it.dart';
+import 'package:graphql/client.dart';
+
 class AuthenticationService {
   String? _loginToken;
-  String? participantId;
-  String? studyId;
 
   Future<void> login(String tokenOrURL){
     String token;
@@ -12,10 +14,29 @@ class AuthenticationService {
     } catch (e) {
       token = tokenOrURL;
     }
-    _loginToken = token;
-    return Future(()=>{
-
+    return Future(() async {
+      var graphqlService = GetIt.instance<GraphqlService>();
+      graphqlService.connect(token);
+      await checkValidParticipant();
+      _loginToken = token;
     });
+  }
+
+  Future<void> checkValidParticipant() async{
+    const String readParticipant = r'''
+        {
+          my_participant{
+              id
+          }
+        }
+      ''';
+    final QueryOptions options = QueryOptions(
+      document: gql(readParticipant)
+    );
+    var queryResult = await GetIt.instance<GraphqlService>().client.query(options);
+    if (queryResult.hasException) {
+      throw Exception("Login failed");
+    }
   }
 
   bool isLoggedIn(){

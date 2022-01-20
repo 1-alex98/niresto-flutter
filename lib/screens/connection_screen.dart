@@ -6,19 +6,12 @@ import 'package:niresto_flutter/services/authentication_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:get_it/get_it.dart';
 
-
 void _navigateIntroduction(BuildContext context) {
-  Navigator.popAndPushNamed(
-    context,
-    "/intro"
-  );
+  Navigator.popAndPushNamed(context, "/intro");
 }
 
-
 class ConnectionScreen extends StatefulWidget {
-
   const ConnectionScreen({Key? key}) : super(key: key);
-
 
   @override
   _ConnectionScreenState createState() => _ConnectionScreenState();
@@ -33,7 +26,6 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       padding: EdgeInsets.all(16.0),
       child: _ManualLogin(),
     )
-
   ];
 
   void _onItemTapped(int index) {
@@ -115,18 +107,22 @@ class _QRLoginState extends State<_QRLogin> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       var instance = GetIt.instance<AuthenticationService>();
-      instance.login(scanData.code)
-        .then((value) => _navigateIntroduction(context));
+      instance
+          .login(scanData.code)
+          .then((value) => _navigateIntroduction(context), onError: (e) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Login failed"),
+        ));
+      });
     });
   }
-  
+
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
   }
 }
-
 
 class _ManualLogin extends StatefulWidget {
   const _ManualLogin({Key? key}) : super(key: key);
@@ -145,6 +141,7 @@ class _ManualLoginState extends State<_ManualLogin> {
     tokenController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -172,8 +169,12 @@ class _ManualLoginState extends State<_ManualLogin> {
                 // the form is invalid.
                 if (_formKey.currentState!.validate()) {
                   var instance = GetIt.instance<AuthenticationService>();
-                  instance.login(tokenController.value.text)
-                    .then((value) => _navigateIntroduction(context));
+                  instance.login(tokenController.value.text).then(
+                      (value) => _navigateIntroduction(context), onError: (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Login failed"),
+                    ));
+                  });
                 }
               },
               child: const Text('Login'),

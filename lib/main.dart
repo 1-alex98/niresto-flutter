@@ -2,22 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:niresto_flutter/screens/connection_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:niresto_flutter/screens/introduction_screen.dart';
 import 'package:niresto_flutter/services/authentication_service.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:niresto_flutter/services/graphql_service.dart';
+
 
 GetIt locator = GetIt.instance;
 
-void main() {
+void main() async {
   initLocator();
-  runApp(MyApp());
+  GetIt.instance<GraphqlService>().connect(null);
+  runApp(GraphQLProvider(
+      client: GetIt.instance<GraphqlService>().valueNotifier,
+      child: MyApp()
+  ));
 }
 
 void initLocator() {
+  locator.registerSingleton(GraphqlService());
   locator.registerSingleton(AuthenticationService());
-
 }
 
 class MyApp extends StatelessWidget {
