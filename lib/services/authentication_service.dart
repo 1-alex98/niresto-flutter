@@ -2,6 +2,8 @@
 import 'package:niresto_flutter/services/graphql_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
+import 'dart:developer';
+
 
 class AuthenticationService {
   String? _loginToken;
@@ -35,6 +37,7 @@ class AuthenticationService {
     );
     var queryResult = await GetIt.instance<GraphqlService>().client.query(options);
     if (queryResult.hasException) {
+      log("Errors logging in ${queryResult.exception.toString()}");
       throw Exception("Login failed");
     }
   }
@@ -42,6 +45,5 @@ class AuthenticationService {
   bool isLoggedIn(){
     return _loginToken != null;
   }
-
 
 }

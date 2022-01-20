@@ -1,16 +1,18 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:get_it/get_it.dart';
+import 'package:niresto_flutter/config/app_config.dart';
 
 
 class GraphqlService {
   late GraphQLClient client;
 
-  late ValueNotifier<GraphQLClient> valueNotifier;
+  ValueNotifier<GraphQLClient>? valueNotifier;
 
   void connect(String? token){
     final _httpLink = HttpLink(
-      'https://10.0.2.2/graphql',
+      GetIt.instance<AppConfig>().graphqlLink,
     );
 
     final _authLink = AuthLink(
@@ -23,7 +25,11 @@ class GraphqlService {
       cache: GraphQLCache(),
       link: _link,
     );
-    valueNotifier= ValueNotifier(client);
+    if(valueNotifier == null){
+      valueNotifier= ValueNotifier(client);
+    } else {
+      valueNotifier?.value = client;
+    }
   }
 
 }

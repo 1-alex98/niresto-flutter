@@ -6,8 +6,8 @@ import 'package:niresto_flutter/services/authentication_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:get_it/get_it.dart';
 
-void _navigateIntroduction(BuildContext context) {
-  Navigator.popAndPushNamed(context, "/intro");
+void _navigateWelcome(BuildContext context) {
+  Navigator.popAndPushNamed(context, "/welcome");
 }
 
 class ConnectionScreen extends StatefulWidget {
@@ -109,7 +109,7 @@ class _QRLoginState extends State<_QRLogin> {
       var instance = GetIt.instance<AuthenticationService>();
       instance
           .login(scanData.code)
-          .then((value) => _navigateIntroduction(context), onError: (e) {
+          .then((value) => _navigateWelcome(context), onError: (e) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Login failed"),
         ));
@@ -170,7 +170,7 @@ class _ManualLoginState extends State<_ManualLogin> {
                 if (_formKey.currentState!.validate()) {
                   var instance = GetIt.instance<AuthenticationService>();
                   instance.login(tokenController.value.text).then(
-                      (value) => _navigateIntroduction(context), onError: (e) {
+                      (value) => _navigateWelcome(context), onError: (e) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("Login failed"),
                     ));
