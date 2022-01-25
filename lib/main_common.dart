@@ -9,6 +9,7 @@ import 'package:niresto_flutter/config/app_config.dart';
 import 'package:niresto_flutter/screens/connection_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:niresto_flutter/screens/introduction_screen.dart';
+import 'package:niresto_flutter/screens/question_screen.dart';
 import 'package:niresto_flutter/screens/welcome_screen.dart';
 import 'package:niresto_flutter/services/authentication_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           // When navigating to the "/second" route, build the SecondScreen widget.
           '/welcome': (context) => const WelcomeScreen(),
           '/intro': (context) => const IntroductionScreen(),
+          '/question': (context) => const QuestionScreen(),
         },
       theme: ThemeData(
         // Define the default brightness and colors.

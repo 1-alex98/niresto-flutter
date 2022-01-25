@@ -16,6 +16,11 @@ const myStudyQuery = '''
               }
               ''';
 
+void _navigateQuestion(BuildContext context) {
+  Navigator.popAndPushNamed(context, "/question");
+}
+
+
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({Key? key}) : super(key: key);
 
@@ -40,7 +45,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your onPressed code here!
+          _navigateQuestion(context);
         },
         backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
         child: const Icon(Icons.arrow_forward_ios),
@@ -85,9 +90,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
                 children: [
                   const Text("Sie nehmen an folgender Studie Teil:"),
                   const SizedBox(height: 30),
-                  Text(title, style: Theme.of(context).textTheme.headline2),
+                  Align(alignment: Alignment.topLeft,child:Text(title, style: Theme.of(context).textTheme.headline2)),
                   const SizedBox(height: 20),
-                  Text(description),
+                  Align(alignment: Alignment.topLeft,child:Text(description)),
                   const Expanded(child: SizedBox()),
                   TabPageSelector(controller: tabController)
                 ],
@@ -99,9 +104,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
     return Container(
               child: Column(
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.headline2),
+                  Align(alignment: Alignment.topLeft,child: Text(title, style: Theme.of(context).textTheme.headline2)),
                   const SizedBox(height: 20),
-                  Text(description),
+                  Align(alignment: Alignment.topLeft,child:Text(description)),
                   const Expanded(child: SizedBox()),
                   TabPageSelector(controller: tabController)
                 ],
