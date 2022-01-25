@@ -20,10 +20,19 @@ class GraphqlService {
     );
 
     Link _link = _authLink.concat(_httpLink);
-
+    final policies = Policies(
+      fetch: FetchPolicy.noCache,
+    );
     client = GraphQLClient(
       cache: GraphQLCache(),
       link: _link,
+      defaultPolicies: DefaultPolicies(
+        watchQuery: policies,
+        watchMutation: policies,
+        query: policies,
+        mutate: policies,
+        subscribe: policies
+      )
     );
     if(valueNotifier == null){
       valueNotifier= ValueNotifier(client);
