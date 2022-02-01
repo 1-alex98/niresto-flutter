@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:niresto_flutter/screens/widgets/question_details.dart';
 
 const myStudyQuery ="""
 {
@@ -15,13 +16,10 @@ const myStudyQuery ="""
 }
 """;
 
-_openQuestion(question, context) {
-
-}
-
-
 class QuestionList extends StatefulWidget {
-  const QuestionList({Key? key}) : super(key: key);
+  final void Function(Question question) onQuestionDetails;
+
+  const QuestionList({Key? key, required this.onQuestionDetails}) : super(key: key);
 
   @override
   _QuestionListState createState() => _QuestionListState();
@@ -70,9 +68,14 @@ class _QuestionListState extends State<QuestionList> {
             style: const TextStyle(fontSize: 22.0),
           ),
         ),
-        onTap: () => {_openQuestion(question, context)},
+        onTap: () => openQuestion(question),
       )
     );
+  }
+
+  void openQuestion(question){
+    var questionObject = Question(question['question_text'], question['question_title']);
+    widget.onQuestionDetails(questionObject);
   }
 
 }

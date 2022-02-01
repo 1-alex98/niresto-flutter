@@ -32,25 +32,46 @@ void initLocator() {
   locator.registerSingleton(AuthenticationService());
 }
 
+const connectionPath = '/connection';
+const welcomePath = '/welcome';
+const introPath = '/intro';
+const questionPath = '/question';
+
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Niresto',
-        initialRoute: '/',
-        routes: {
-          // When navigating to the "/" route, build the FirstScreen widget.
-          '/': (context) => const ConnectionScreen(),
-          // When navigating to the "/second" route, build the SecondScreen widget.
-          '/welcome': (context) => const WelcomeScreen(),
-          '/intro': (context) => const IntroductionScreen(),
-          '/question': (context) => const QuestionScreen(),
+        onGenerateRoute: (settings) {
+          late Widget page;
+          if (settings.name == connectionPath || settings.name == "/") {
+            page = const ConnectionScreen();
+          } else if (settings.name == welcomePath) {
+            page = const WelcomeScreen();
+          } else if (settings.name == introPath) {
+            page = const IntroductionScreen();
+          } else if (settings.name!.startsWith(questionPath)) {
+            final subRoute = settings.name!.substring(questionPath.length);
+            page = QuestionScreen(
+              subPageRoute: subRoute,
+            );
+          } else {
+            throw Exception('Unknown route: ${settings.name}');
+          }
+
+          return MaterialPageRoute<dynamic>(
+            builder: (context) {
+              return page;
+            },
+            settings: settings,
+          );
         },
-      theme: ThemeData(
-        // Define the default brightness and colors.
-        brightness: Brightness.light,
-        primaryColor: Colors.lightBlue[800],
-      ),
+        theme: ThemeData(
+          // Define the default brightness and colors.
+          brightness: Brightness.light,
+          primaryColor: Colors.lightBlue[800],
+        ),
     );
   }
 }

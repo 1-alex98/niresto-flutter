@@ -42,8 +42,4 @@ class AuthenticationService {
     }
   }
 
-  bool isLoggedIn(){
-    return _loginToken != null;
-  }
-
 }
