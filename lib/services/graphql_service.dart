@@ -22,6 +22,8 @@ class GraphqlService {
     Link _link = _authLink.concat(_httpLink);
     final policies = Policies(
       fetch: FetchPolicy.noCache,
+      error: ErrorPolicy.ignore,
+      cacheReread: CacheRereadPolicy.ignoreAll
     );
     client = GraphQLClient(
       cache: GraphQLCache(),

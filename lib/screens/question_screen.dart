@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:niresto_flutter/screens/widgets/question_list.dart';
 import 'package:niresto_flutter/services/authentication_service.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:get_it/get_it.dart';
@@ -18,10 +19,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: NavDrawer(),
+        drawer: const NavDrawer(),
         appBar: AppBar(
-        title: const Text('Questions'),
-      )
+          title: const Text('Questions'),
+        ),
+        body: const QuestionList()
     );
   }
 }
