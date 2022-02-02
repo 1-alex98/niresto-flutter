@@ -1,6 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:get_it/get_it.dart';
+import 'package:niresto_flutter/services/graphql_service.dart';
+
+const sendAnswer = """
+{
+
+}
+""";
 
 class QuestionDetails extends StatefulWidget {
   final Question question;
@@ -45,7 +55,20 @@ class _QuestionDetailsState extends State<QuestionDetails> {
     );
   }
 
-  void onSend(){
-
+  void onSend() async{
+    final MutationOptions options = MutationOptions(
+        document: gql(sendAnswer)
+    );
+    var queryResult = await GetIt.instance<GraphqlService>().client.mutate(options);
+    if (queryResult.hasException) {
+      log("Errors sending answer ${queryResult.exception.toString()}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Sending answer failed"),
+      ));
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Sent answer"),
+    ));
   }
 }
