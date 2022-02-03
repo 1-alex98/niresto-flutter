@@ -7,12 +7,14 @@ import 'dart:developer';
 
 class AuthenticationService {
   String? _loginToken;
+  bool loginInProgress = false;
 
   Future<void> login(String tokenOrURL){
+    loginInProgress = true;
     String token;
     try{
       var queryParameters = Uri.parse(tokenOrURL).queryParameters;
-      token = queryParameters["t"]!;
+      token = queryParameters["token"]!;
     } catch (e) {
       token = tokenOrURL;
     }
@@ -21,6 +23,7 @@ class AuthenticationService {
       graphqlService.connect(token);
       await checkValidParticipant();
       _loginToken = token;
+      loginInProgress = false;
     });
   }
 

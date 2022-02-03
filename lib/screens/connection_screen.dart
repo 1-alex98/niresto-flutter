@@ -107,6 +107,9 @@ class _QRLoginState extends State<_QRLogin> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       var instance = GetIt.instance<AuthenticationService>();
+      if(instance.loginInProgress){
+        return;
+      }
       instance
           .login(scanData.code)
           .then((value) => _navigateWelcome(context), onError: (e) {

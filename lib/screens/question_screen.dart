@@ -29,6 +29,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
           child: FloatingActionButton(
             onPressed: () {
               callback.onSend!();
+              setState(() {
+                visibleSendButton = false;
+              });
             },
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             child: const Icon(Icons.send),
