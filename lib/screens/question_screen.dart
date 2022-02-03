@@ -55,8 +55,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
     );
   }
 
-  _onQuestionDetails(Question question){
-    _navigatorKey.currentState!.pushNamed("detail", arguments: question);
+  Future _onQuestionDetails(Question question) async{
+    await _navigatorKey.currentState!.pushNamed("detail", arguments: question);
   }
 
   Route? _onGenerateRoute(RouteSettings settings) {

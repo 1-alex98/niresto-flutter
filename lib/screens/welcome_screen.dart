@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:niresto_flutter/screens/widgets/loading.dart';
 
 const myParticipantQuery = '''
               {
@@ -81,7 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
         builder: (result, {fetchMore, refetch}) {
           if (result.isLoading) {
-            return const Text("Loading...");
+            return const Loading();
           }
           if (result.hasException) {
             return const Text("Error loading name");
@@ -96,7 +97,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
         builder: (result, {fetchMore, refetch}) {
           if (result.isLoading) {
-            return const Text("Loading...");
+            return const Loading();
           }
           if (result.hasException) {
             return const Text("Error loading name");

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:niresto_flutter/screens/widgets/question_details.dart';
 
+import 'loading.dart';
+
 const myStudyQuery ="""
 {
   questions_new{
@@ -17,7 +19,7 @@ const myStudyQuery ="""
 """;
 
 class QuestionList extends StatefulWidget {
-  final void Function(Question question) onQuestionDetails;
+  final Future Function(Question question) onQuestionDetails;
 
   const QuestionList({Key? key, required this.onQuestionDetails}) : super(key: key);
 
@@ -26,34 +28,38 @@ class QuestionList extends StatefulWidget {
 }
 
 class _QuestionListState extends State<QuestionList> {
-
-
+  Function? refetch;
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: Query(
-        options: QueryOptions(
-          document: gql(myStudyQuery),
-        ),
-        builder: (result, {fetchMore, refetch}) {
+          options: QueryOptions(
+            document: gql(myStudyQuery),
+          ),
+          builder: (result, {fetchMore, refetch}) {
 
-          if (result.isLoading) {
-            return const Text("Loading...");
-          }
-          if (result.hasException) {
-            return const Text("Error loading introduction");
-          }
-          var data = result.data!['questions_new'];
-          return ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-                final question = data[index];
+            if (result.isLoading) {
+              return const Loading();
+            }
+            if (result.hasException) {
+              return const Text("Error loading introduction");
+            }
+            var data = result.data!['questions_new'];
+            this.refetch = refetch;
+            return RefreshIndicator(
+                onRefresh: refetch!,
+                child:ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final question = data[index];
 
-                return _questionItem(question, context);
-              }
+                    return _questionItem(question, context);
+                  }
+                )
             );
-      })
+          })
     );
   }
 
@@ -73,9 +79,10 @@ class _QuestionListState extends State<QuestionList> {
     );
   }
 
-  void openQuestion(question){
-    var questionObject = Question(question['question_text'], question['question_title']);
-    widget.onQuestionDetails(questionObject);
+  void openQuestion(question) async{
+    var questionObject = Question(question['question_text'], question['question_title'], question['id']);
+    await widget.onQuestionDetails(questionObject);
+    refetch!();
   }
 
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:niresto_flutter/screens/widgets/loading.dart';
 
 const myStudyQuery = '''
               {
@@ -61,7 +62,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> with TickerProv
         builder: (result, {fetchMore, refetch}) {
 
           if (result.isLoading) {
-            return const Text("Loading...");
+            return const Loading();
           }
           if (result.hasException) {
             return const Text("Error loading introduction");
