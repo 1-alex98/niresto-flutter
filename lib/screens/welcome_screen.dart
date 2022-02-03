@@ -14,7 +14,9 @@ const myParticipantQuery = '''
               ''';
 const myStudyQuery = '''
               {
-                my_study_query{name}
+                my_study_query{
+                  name
+                }
               }
               ''';
 
@@ -43,7 +45,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   children: [
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Text("Wilkommen", style: Theme.of(context).textTheme.headline2),
+                      child: Text("Welcome", style: Theme.of(context).textTheme.headline2),
                     ),
                     const SizedBox(height: 20),
                     Align(
@@ -53,7 +55,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Text("Zur Studie", style: Theme.of(context).textTheme.headline5),
+                      child: Text("To the study", style: Theme.of(context).textTheme.headline5),
                     ),
                     const SizedBox(height: 20),
                     Align(
@@ -87,7 +89,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           if (result.hasException) {
             return const Text("Error loading name");
           }
-          return Text(result.data!['my_participant']['name']);
+          return Text(result.data!['my_participant']['name']??"No name given");
         });
   }
   Query studyName() {
@@ -102,7 +104,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           if (result.hasException) {
             return const Text("Error loading name");
           }
-          return Text(result.data!['my_study_query']['name']);
+          return Text(result.data!['my_study_query']['name']??"No name given");
         });
   }
 }
