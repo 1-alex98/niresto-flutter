@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -70,6 +71,7 @@ class _QRLogin extends StatefulWidget {
 class _QRLoginState extends State<_QRLogin> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
+  bool loginInProgress = false;
 
   @override
   void reassemble() {
@@ -107,16 +109,21 @@ class _QRLoginState extends State<_QRLogin> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       var instance = GetIt.instance<AuthenticationService>();
-      if(instance.loginInProgress){
+      if(loginInProgress){
         return;
       }
+      loginInProgress = true;
       instance
           .login(scanData.code)
-          .then((value) => _navigateWelcome(context), onError: (e) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Login failed"),
-        ));
-      });
+          .then((value) {
+            _navigateWelcome(context);
+            loginInProgress = false;
+          }, onError: (e) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Login failed"),
+            ));
+            loginInProgress = false;
+          });
     });
   }
 
@@ -173,11 +180,13 @@ class _ManualLoginState extends State<_ManualLogin> {
                 if (_formKey.currentState!.validate()) {
                   var instance = GetIt.instance<AuthenticationService>();
                   instance.login(tokenController.value.text).then(
-                      (value) => _navigateWelcome(context), onError: (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Login failed"),
-                    ));
-                  });
+                      (value) => _navigateWelcome(context),
+                      onError: (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Login failed"),
+                        ));
+                      }
+                  );
                 }
               },
               child: const Text('Login'),

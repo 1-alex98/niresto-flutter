@@ -6,11 +6,8 @@ import 'dart:developer';
 
 
 class AuthenticationService {
-  String? _loginToken;
-  bool loginInProgress = false;
 
   Future<void> login(String tokenOrURL){
-    loginInProgress = true;
     String token;
     try{
       var queryParameters = Uri.parse(tokenOrURL).queryParameters;
@@ -22,8 +19,6 @@ class AuthenticationService {
       var graphqlService = GetIt.instance<GraphqlService>();
       graphqlService.connect(token);
       await checkValidParticipant();
-      _loginToken = token;
-      loginInProgress = false;
     });
   }
 
@@ -39,7 +34,7 @@ class AuthenticationService {
       document: gql(readParticipant)
     );
     var queryResult = await GetIt.instance<GraphqlService>().client.query(options);
-    if (queryResult.hasException) {
+    if (queryResult.hasException  || queryResult.data == null) {
       log("Errors logging in ${queryResult.exception.toString()}");
       throw Exception("Login failed");
     }
