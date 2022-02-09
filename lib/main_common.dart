@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:ffi';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:niresto_flutter/screens/connection_screen.dart';
 import 'package:get_it/get_it.dart';
@@ -19,11 +19,13 @@ import 'firebase_options.dart';
 
 GetIt locator = GetIt.instance;
 
+
 void commonMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   await initLocator();
   GetIt.instance<GraphqlService>().connect(null);
   runApp(GraphQLProvider(
@@ -44,6 +46,7 @@ const questionPath = '/question';
 
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -79,4 +82,5 @@ class MyApp extends StatelessWidget {
         ),
     );
   }
+
 }

@@ -31,18 +31,35 @@ class QuestionList extends StatefulWidget {
 class _QuestionListState extends State<QuestionList> {
   Function? refetch;
 
+
+  void _setup(BuildContext context) async{
+    FirebaseMessaging.onMessageOpenedApp.listen((message){
+      _newQuestions(context);
+    });
+    FirebaseMessaging.instance.getInitialMessage()
+        .then((message) {
+          if(message == null){
+            return;
+          }
+          _newQuestions(context);
+        });
+    FirebaseMessaging.onMessage.listen((message) {
+      _newQuestions(context);
+    });
+  }
+
+  void _newQuestions(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("New question available."),
+    ));
+    if(refetch != null){
+      refetch!();
+    }
+  }
+
   @override
   void initState() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if(refetch != null){
-        refetch!();
-      }
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((message){
-      if(refetch != null){
-        refetch!();
-      }
-    });
+    _setup(context);
   }
 
   @override
@@ -54,7 +71,7 @@ class _QuestionListState extends State<QuestionList> {
             document: gql(myStudyQuery),
           ),
           builder: (result, {fetchMore, refetch}) {
-
+            this.refetch = refetch;
             if (result.isLoading) {
               return const Loading();
             }
@@ -62,7 +79,17 @@ class _QuestionListState extends State<QuestionList> {
               return const Text("Error loading introduction");
             }
             var data = result.data!['questions_new'];
-            this.refetch = refetch;
+            if(data.length == 0) {
+              return RefreshIndicator(
+                  onRefresh: refetch!,
+                  child:ListView.builder(
+                      itemCount: 1,
+                      itemBuilder: (context, index) {
+                        return const Text("No new questions");
+                      }
+                  )
+              );
+            }
             return RefreshIndicator(
                 onRefresh: refetch!,
                 child:ListView.builder(

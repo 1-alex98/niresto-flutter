@@ -10,6 +10,9 @@ import 'package:get_it/get_it.dart';
 void _navigateWelcome(BuildContext context) {
   Navigator.popAndPushNamed(context, "/welcome");
 }
+void _navigateQuestions(BuildContext context) {
+  Navigator.popAndPushNamed(context, "/question");
+}
 
 class ConnectionScreen extends StatefulWidget {
   const ConnectionScreen({Key? key}) : super(key: key);
@@ -87,14 +90,14 @@ class _QRLoginState extends State<_QRLogin> {
       instance
           .login(instance.getSavedToken()!)
           .then((value) {
-        _navigateWelcome(context);
-        loginInProgress = false;
-      }, onError: (e) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Login failed"),
-        ));
-        loginInProgress = false;
-      });
+            _navigateQuestions(context);
+            loginInProgress = false;
+          }, onError: (e) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Login failed, are you connected? Restart the app after connecting."),
+            ));
+            loginInProgress = false;
+          });
     }
   }
 
