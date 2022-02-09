@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:niresto_flutter/screens/widgets/question_details.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'loading.dart';
 
@@ -29,7 +30,21 @@ class QuestionList extends StatefulWidget {
 
 class _QuestionListState extends State<QuestionList> {
   Function? refetch;
-  
+
+  @override
+  void initState() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if(refetch != null){
+        refetch!();
+      }
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message){
+      if(refetch != null){
+        refetch!();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(

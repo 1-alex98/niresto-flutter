@@ -4,8 +4,14 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
 import 'dart:developer';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class AuthenticationService {
+
+  final SharedPreferences prefs;
+
+  AuthenticationService(this.prefs);
 
   Future<void> login(String tokenOrURL){
     String token;
@@ -19,7 +25,16 @@ class AuthenticationService {
       var graphqlService = GetIt.instance<GraphqlService>();
       graphqlService.connect(token);
       await checkValidParticipant();
+      await prefs.setString('token', token);
     });
+  }
+
+  String? getSavedToken(){
+    return prefs.getString('token');
+  }
+
+  Future<void> logout() async{
+    await prefs.remove('token');
   }
 
   Future<void> checkValidParticipant() async{

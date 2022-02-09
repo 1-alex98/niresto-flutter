@@ -73,6 +73,31 @@ class _QRLoginState extends State<_QRLogin> {
   QRViewController? controller;
   bool loginInProgress = false;
 
+
+  @override
+  void initState() {
+    super.initState();
+    _loginIfTokenSaved();
+  }
+
+  void _loginIfTokenSaved() {
+    var instance = GetIt.instance<AuthenticationService>();
+    if(instance.getSavedToken() != null){
+      loginInProgress = true;
+      instance
+          .login(instance.getSavedToken()!)
+          .then((value) {
+        _navigateWelcome(context);
+        loginInProgress = false;
+      }, onError: (e) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Login failed"),
+        ));
+        loginInProgress = false;
+      });
+    }
+  }
+
   @override
   void reassemble() {
     super.reassemble();

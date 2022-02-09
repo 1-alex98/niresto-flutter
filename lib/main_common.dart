@@ -5,7 +5,6 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:niresto_flutter/config/app_config.dart';
 import 'package:niresto_flutter/screens/connection_screen.dart';
 import 'package:get_it/get_it.dart';
 import 'package:niresto_flutter/screens/introduction_screen.dart';
@@ -14,12 +13,18 @@ import 'package:niresto_flutter/screens/welcome_screen.dart';
 import 'package:niresto_flutter/services/authentication_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:niresto_flutter/services/graphql_service.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 
 GetIt locator = GetIt.instance;
 
 void commonMain() async {
-  initLocator();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await initLocator();
   GetIt.instance<GraphqlService>().connect(null);
   runApp(GraphQLProvider(
       client: GetIt.instance<GraphqlService>().valueNotifier,
@@ -27,9 +32,9 @@ void commonMain() async {
   ));
 }
 
-void initLocator() {
+Future<void> initLocator() async{
   locator.registerSingleton(GraphqlService());
-  locator.registerSingleton(AuthenticationService());
+  locator.registerSingleton(AuthenticationService(await SharedPreferences.getInstance()));
 }
 
 const connectionPath = '/connection';

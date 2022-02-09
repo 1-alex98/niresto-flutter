@@ -112,7 +112,9 @@ class NavDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
-            onTap: () {
+            onTap: () async {
+              var instance = GetIt.instance<AuthenticationService>();
+              await instance.logout();
               Navigator.of(context).pop();
               Navigator.popAndPushNamed(context, "/connection");
             },
