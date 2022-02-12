@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:niresto_flutter/services/graphql_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql/client.dart';
@@ -24,7 +25,7 @@ class AuthenticationService {
     return Future(() async {
       var graphqlService = GetIt.instance<GraphqlService>();
       graphqlService.connect(token);
-      await checkValidParticipant();
+      await checkValidParticipantAndUpdateToken();
       await prefs.setString('token', token);
     });
   }
@@ -37,19 +38,24 @@ class AuthenticationService {
     await prefs.remove('token');
   }
 
-  Future<void> checkValidParticipant() async{
+  Future<void> checkValidParticipantAndUpdateToken() async{
     const String readParticipant = r'''
-        {
-          my_participant{
-              id
-          }
+        mutation update($token: String!){
+            fcm_token_update(
+                new_token: $token
+            )
         }
       ''';
-    final QueryOptions options = QueryOptions(
-      document: gql(readParticipant)
+    String? token = await FirebaseMessaging.instance.getToken();
+
+    final MutationOptions options = MutationOptions(
+      document: gql(readParticipant),
+      variables: {
+        "token": token
+      }
     );
-    var queryResult = await GetIt.instance<GraphqlService>().client.query(options);
-    if (queryResult.hasException  || queryResult.data == null) {
+    var queryResult = await GetIt.instance<GraphqlService>().client.mutate(options);
+    if (queryResult.hasException || queryResult.data == null || !queryResult.data!["fcm_token_update"]) {
       log("Errors logging in ${queryResult.exception.toString()}");
       throw Exception("Login failed");
     }
