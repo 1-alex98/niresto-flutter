@@ -1,6 +1,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:niresto_flutter/screens/widgets/participant_info.dart';
 import 'package:niresto_flutter/screens/widgets/question_details.dart';
 import 'package:niresto_flutter/screens/widgets/question_list.dart';
 import 'package:niresto_flutter/services/authentication_service.dart';
@@ -24,7 +25,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: const NavDrawer(),
+        drawer: NavDrawer(onParticipantInfo: _onParticipantInfo),
         floatingActionButton: Visibility(
           child: FloatingActionButton(
             onPressed: () {
@@ -62,6 +63,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
     await _navigatorKey.currentState!.pushNamed("detail", arguments: question);
   }
 
+  Future _onParticipantInfo() async{
+    await _navigatorKey.currentState!.pushNamed("info");
+  }
+
   Route? _onGenerateRoute(RouteSettings settings) {
     late Widget page;
     switch (settings.name) {
@@ -80,6 +85,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
           visibleSendButton = true;
         });
         break;
+      case "info":
+        page = const ParticipantInfo();
+        setState(() {
+          visibleSendButton = false;
+        });
+        break;
     }
 
     return MaterialPageRoute<dynamic>(
@@ -93,7 +104,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
 }
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({Key? key}) : super(key: key);
+  Future Function() onParticipantInfo;
+
+  NavDrawer({required this.onParticipantInfo, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +130,14 @@ class NavDrawer extends StatelessWidget {
               await instance.logout();
               Navigator.of(context).pop();
               Navigator.popAndPushNamed(context, "/connection");
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('My id'),
+            onTap: () async {
+              onParticipantInfo();
+              Navigator.of(context).pop();
             },
           ),
         ],
