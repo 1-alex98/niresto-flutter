@@ -5,7 +5,6 @@ import 'package:niresto_flutter/screens/widgets/participant_info.dart';
 import 'package:niresto_flutter/screens/widgets/question_details.dart';
 import 'package:niresto_flutter/screens/widgets/question_list.dart';
 import 'package:niresto_flutter/services/authentication_service.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:get_it/get_it.dart';
 
 class QuestionScreen extends StatefulWidget {
